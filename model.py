@@ -3,6 +3,8 @@ from typing import Optional
 
 
 class OrderLine:
+    """Товарная позиция"""
+
     def __init__(self, orderid: str, sku: str, qty: int):
         self.orderid = orderid
         self.sku = sku
@@ -10,6 +12,8 @@ class OrderLine:
 
 
 class Batch:
+    """Партия"""
+
     def __init__(self, reference: str, sku: str, qty: int, eta: Optional[date]):
         self.reference = reference
         self.sku = sku
