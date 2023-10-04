@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Optional
+from typing import Optional, Self
 
 
 class OrderLine:
@@ -14,11 +14,38 @@ class OrderLine:
 class Batch:
     """Партия"""
 
-    def __init__(self, reference: str, sku: str, qty: int, eta: Optional[date]):
+    def __init__(self, reference: str, sku: str, qty: int, eta: Optional[date] = None):
         self.reference = reference
         self.sku = sku
-        self.available_quantity = qty
+        self.initial_quantity = qty
         self.eta = eta
+        self.allocations = set()
+
+    def __gt__(self, other: Self) -> bool:
+        if self.eta is None:
+            return False
+        if other.eta is None:
+            return True
+        return self.eta > other.eta
+
+    @property
+    def allocated_quantity(self):
+        return sum(line.qty for line in self.allocations)
+
+    @property
+    def available_quantity(self):
+        return self.initial_quantity - self.allocated_quantity
 
     def allocate(self, line: OrderLine) -> None:
-        self.available_quantity -= line.qty
+        self.allocations.add(line)
+
+    def deallocate(self, line: OrderLine) -> None:
+        if line in self.allocations:
+            self.allocations.remove(line)
+
+    def can_allocate(self, line: OrderLine) -> bool:
+        if line in self.allocations:
+            return False
+        if self.sku != line.sku:
+            return False
+        return self.available_quantity >= line.qty
