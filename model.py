@@ -5,10 +5,16 @@ from typing import Optional, Self
 class OrderLine:
     """Товарная позиция"""
 
-    def __init__(self, orderid: str, sku: str, qty: int):
+    def __init__(self, orderid: str, sku: str, qty: int) -> None:
         self.orderid = orderid
         self.sku = sku
         self.qty = qty
+
+    def __hash__(self):
+        return hash((self.orderid, self.sku, self.qty))
+
+    def __eq__(self, other_order_line) -> bool:
+        return hash(self) == hash(other_order_line)
 
 
 class Batch:
@@ -21,12 +27,18 @@ class Batch:
         self.eta = eta
         self.allocations = set()
 
-    def __gt__(self, other: Self) -> bool:
+    def __eq__(self, other_batch) -> bool:
+        return self.reference == other_batch.reference
+
+    def __hash__(self) -> int:
+        return hash(self.reference)
+
+    def __gt__(self, other_batch: Self) -> bool:
         if self.eta is None:
             return False
-        if other.eta is None:
+        if other_batch.eta is None:
             return True
-        return self.eta > other.eta
+        return self.eta > other_batch.eta
 
     @property
     def allocated_quantity(self):
