@@ -4,7 +4,7 @@ from dotenv import dotenv_values
 def build_db_uri(env_path: str) -> str:
     config_dict = dotenv_values(env_path)
 
-    protocol = "postgres://"
+    protocol = "postgresql+psycopg://"
     user = config_dict.get("DB_USER")
     password = config_dict.get("DB_PASSWORD")
     host = config_dict.get("DB_HOST")
