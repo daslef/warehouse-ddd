@@ -1,10 +1,7 @@
-import pytest
 from sqlalchemy.sql import text
 
 import model
 import repository
-import allocate
-
 import helpers
 
 
@@ -75,13 +72,13 @@ def test_updating_a_batch(session):
     line1 = model.OrderLine("order1", "GENERIC-SOFA", 10)
     line2 = model.OrderLine("order2", "GENERIC-SOFA", 40)
     expected = {line1.orderid, line2.orderid}
-    allocate.allocate(line1, [batch])
+    model.allocate(line1, [batch])
 
     repo = repository.SqlAlchemyRepository(session)
     repo.add(batch)
     session.commit()
 
-    allocate.allocate(line2, [batch])
+    model.allocate(line2, [batch])
     repo.add(batch)
     session.commit()
 

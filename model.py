@@ -1,5 +1,6 @@
 from datetime import date
 from typing import Optional, Self
+from exceptions import OutOfStock
 
 
 class OrderLine:
@@ -61,3 +62,17 @@ class Batch:
         if self.sku != line.sku:
             return False
         return self.available_quantity >= line.qty
+
+
+def allocate(line: OrderLine, batches: list[Batch]) -> str:
+    sorted_suitable_batches = sorted(
+        batch for batch in batches if batch.can_allocate(line)
+    )
+
+    if len(sorted_suitable_batches) == 0:
+        raise OutOfStock
+
+    selected_batch = sorted_suitable_batches[0]
+    selected_batch.allocate(line)
+
+    return selected_batch.reference

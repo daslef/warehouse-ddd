@@ -4,3 +4,11 @@ class OutOfStock(Exception):
     """
 
     pass
+
+
+class InvalidSku(Exception):
+    """
+    Batch with this sku cannot be found
+    """
+
+    pass

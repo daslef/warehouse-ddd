@@ -1,8 +1,7 @@
 from datetime import date, timedelta
 import pytest
 
-from model import Batch, OrderLine
-from allocate import allocate
+from model import Batch, OrderLine, allocate
 from exceptions import OutOfStock
 
 
