@@ -1,6 +1,6 @@
 import model
 import repository
-from exceptions import InvalidSku
+from exceptions import InvalidSku, OutOfStock
 
 
 def allocate(
@@ -11,7 +11,11 @@ def allocate(
     if not any(line.sku == batch.sku for batch in batches):
         raise InvalidSku(f"Invalid sku {line.sku}")
 
-    batchref = model.allocate(line, batches)
+    try:
+        batchref = model.allocate(line, batches)
+    except OutOfStock:
+        raise
+
     session.commit()
 
     return batchref

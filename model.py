@@ -70,7 +70,7 @@ def allocate(line: OrderLine, batches: list[Batch]) -> str:
     )
 
     if len(sorted_suitable_batches) == 0:
-        raise OutOfStock
+        raise OutOfStock(f"Sku {line.sku} is out of stock")
 
     selected_batch = sorted_suitable_batches[0]
     selected_batch.allocate(line)
