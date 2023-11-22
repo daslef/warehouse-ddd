@@ -5,7 +5,7 @@ import repository
 import helpers
 
 
-def test_repository_can_save_a_batch(session):
+def test_repository_can_save_a_batch(in_memory_session):
     """
     arrange: получить фикстуру сессии, создать экземпляр класса батч
     act: инициализировать репозиторий Sql, добавить батч в репозиторий, сделать коммит
@@ -14,15 +14,15 @@ def test_repository_can_save_a_batch(session):
     expected = [("batch-001", "small-watches", 200, None)]
     batch = model.Batch("batch-001", "small-watches", 200)
 
-    repo = repository.SqlAlchemyRepository(session)
+    repo = repository.SqlAlchemyRepository(in_memory_session)
     repo.add(batch)
-    session.commit()
+    in_memory_session.commit()
 
     select_query = text("select reference, sku, initial_quantity, eta from batches")
-    assert list(session.execute(select_query)) == expected
+    assert list(in_memory_session.execute(select_query)) == expected
 
 
-def test_repository_can_retrieve_a_batch_with_allocations(session):
+def test_repository_can_retrieve_a_batch_with_allocations(in_memory_session):
     """
     arrange: получить фикстуру сессии, добавить товарную позицию, батч и размещение в БД
     act: инициализировать репозиторий Sql, получить добавленный батч по идентификатору
@@ -31,11 +31,11 @@ def test_repository_can_retrieve_a_batch_with_allocations(session):
     """
     expected = model.Batch("batch-001", "GENERIC-SOFA", 100, None)
 
-    line = helpers.insert_order_line(session)
-    batch = helpers.insert_batch(session, "batch-001")
-    helpers.insert_allocation(session, line, batch)
+    line = helpers.insert_order_line(in_memory_session)
+    batch = helpers.insert_batch(in_memory_session, "batch-001")
+    helpers.insert_allocation(in_memory_session, line, batch)
 
-    repo = repository.SqlAlchemyRepository(session)
+    repo = repository.SqlAlchemyRepository(in_memory_session)
     retrieved_batch = repo.get("batch-001")
 
     assert retrieved_batch == expected
@@ -46,20 +46,20 @@ def test_repository_can_retrieve_a_batch_with_allocations(session):
     }
 
 
-def test_repository_can_retrieve_batches_list(session):
+def test_repository_can_retrieve_batches_list(in_memory_session):
     expected = [
         model.Batch("batch-001", "GENERIC-SOFA", 100, None),
         model.Batch("batch-002", "GENERIC-SOFA", 100, None),
     ]
 
-    helpers.insert_batch(session, "batch-001")
-    helpers.insert_batch(session, "batch-002")
+    helpers.insert_batch(in_memory_session, "batch-001")
+    helpers.insert_batch(in_memory_session, "batch-002")
 
-    repo = repository.SqlAlchemyRepository(session)
+    repo = repository.SqlAlchemyRepository(in_memory_session)
     assert repo.list() == expected
 
 
-def test_updating_a_batch(session):
+def test_updating_a_batch(in_memory_session):
     """
     arrange: получить фикстуру сессии, создать два заказа (две товарные позиции) и один батч,
              разместить в нем первый заказ; инициализировать репозиторий Sql, добавить в него батч,
@@ -74,12 +74,12 @@ def test_updating_a_batch(session):
     expected = {line1.orderid, line2.orderid}
     model.allocate(line1, [batch])
 
-    repo = repository.SqlAlchemyRepository(session)
+    repo = repository.SqlAlchemyRepository(in_memory_session)
     repo.add(batch)
-    session.commit()
+    in_memory_session.commit()
 
     model.allocate(line2, [batch])
     repo.add(batch)
-    session.commit()
+    in_memory_session.commit()
 
-    assert helpers.get_allocations(session, "batch-001") == expected
+    assert helpers.get_allocations(in_memory_session, "batch-001") == expected
