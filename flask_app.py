@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -23,7 +23,18 @@ except Exception:
 app = Flask(__name__)
 
 
-@app.route("/allocate", methods=["POST"])
+@app.route("/admin")
+def admin_view():
+    session = get_session()
+    repo = repository.SqlAlchemyRepository(session)
+    batches = repo.list()
+    allocations = [b.allocations for b in batches]
+    print(batches, allocations)
+
+    return render_template("admin.html", orderlines=allocations)
+
+
+@app.route("/api/allocate", methods=["POST"])
 def allocate_endpoint():
     session = get_session()
     repo = repository.SqlAlchemyRepository(session)
