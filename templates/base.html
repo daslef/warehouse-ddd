@@ -8,9 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/Loopple/loopple-public-assets@main/riva-dashboard-tailwind/riva-dashboard.css">
+    <link href="https://unpkg.com/@tailwindcss/forms/dist/forms.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="bg-red-50">
     <header>
         <nav class="bg-gray-800">
             <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -111,7 +112,7 @@
             </div>
         </nav>
     </header>
-    <main>
+    <main class="p-2">
         {% block main %} {% endblock %}
     </main>
 </body>
