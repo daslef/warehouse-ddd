@@ -35,6 +35,8 @@ def seed_db():
     repo.add(batch_tables)
     repo.add(batch_chairs)
 
+    session.add(model.User("test@gmail.com", "testpassword"))
+
     session.commit()
 
     for line in lines:

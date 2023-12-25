@@ -11,7 +11,7 @@
     <link href="https://unpkg.com/@tailwindcss/forms/dist/forms.min.css" rel="stylesheet">
 </head>
 
-<body class="bg-red-50">
+<body class="bg-red-50 overflow-y-hidden">
     <header>
         <nav class="bg-gray-800">
             <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -54,6 +54,7 @@
                             </div>
                         </div>
                     </div>
+                    {% if current_user.is_authenticated %}
                     <div
                         class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                         <button type="button"
@@ -66,7 +67,6 @@
                                     d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                             </svg>
                         </button>
-
                         <!-- Profile dropdown -->
                         <div class="relative ml-3">
                             <div>
@@ -80,7 +80,6 @@
                                         alt="">
                                 </button>
                             </div>
-
                             <div class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                 role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
                                 tabindex="-1">
@@ -94,6 +93,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -115,6 +115,29 @@
     <main class="p-2">
         {% block main %} {% endblock %}
     </main>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div
+        class="fixed bottom-12 right-6 flex w-full max-w-sm overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <div class="flex items-center justify-center w-12 bg-red-500">
+            <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M20 3.36667C10.8167 3.36667 3.3667 10.8167 3.3667 20C3.3667 29.1833 10.8167 36.6333 20 36.6333C29.1834 36.6333 36.6334 29.1833 36.6334 20C36.6334 10.8167 29.1834 3.36667 20 3.36667ZM19.1334 33.3333V22.9H13.3334L21.6667 6.66667V17.1H27.25L19.1334 33.3333Z" />
+            </svg>
+        </div>
+
+        <div class="px-4 py-2 -mx-3">
+            <div class="mx-3">
+                <span class="font-semibold text-red-500 dark:text-red-400">Error</span>
+                <p class="text-sm text-gray-600 dark:text-gray-200">
+                    {{ messages[0] }}
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endwith %}
 </body>
 
 </html>

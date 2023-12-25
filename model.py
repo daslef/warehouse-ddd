@@ -1,6 +1,17 @@
 from datetime import date
 from typing import Optional, Self
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 from exceptions import OutOfStock
+
+
+class User(UserMixin):
+    def __init__(self, username: str, password: str):
+        self.username = username
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password: str):
+        return check_password_hash(self.password_hash, password)
 
 
 class OrderLine:

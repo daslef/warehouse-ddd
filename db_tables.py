@@ -6,6 +6,14 @@ import model
 mapper_registry = registry()
 metadata = mapper_registry.metadata
 
+users = Table(
+    "users",
+    metadata,
+    Column("id", Integer, primary_key=True, autoincrement=True),
+    Column("username", String(255)),
+    Column("password_hash", String(255)),
+)
+
 order_lines = Table(
     "order_lines",
     metadata,
@@ -47,6 +55,7 @@ def start_mappers():
             )
         },
     )
+    mapper_registry.map_imperatively(model.User, users)
 
 
 start_mappers()
