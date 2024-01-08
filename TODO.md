@@ -9,6 +9,7 @@
 - пре-коммит хуки
 - гитхаб экшнз
 - деплой на рендер
+  https://github.com/marketplace/actions/render-deploy-action
 - релиз докеризованного приложения
 
 фичи:
