@@ -6,6 +6,7 @@ import click
 @click.version_option()
 def main() -> None:
     """Warehouse Ddd."""
+    print("I am working")
 
 
 if __name__ == "__main__":
