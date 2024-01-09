@@ -8,6 +8,7 @@
 
 - пре-коммит хуки
 - гитхаб экшнз
+  https://jacobian.org/til/github-actions-poetry/
 - деплой на рендер
   https://github.com/marketplace/actions/render-deploy-action
 - релиз докеризованного приложения
