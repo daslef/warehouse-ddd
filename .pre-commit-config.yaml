@@ -38,6 +38,7 @@ repos:
         entry: flake8
         language: system
         types: [python]
+        stages: [commit]
         require_serial: true
         args: [--darglint-ignore-regex, .*]
       - id: isort

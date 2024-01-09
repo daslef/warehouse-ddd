@@ -33,7 +33,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pipx install poetry
+          pip install --user poetry
           poetry --version
 
       - name: Set up Python ${{ matrix.python }}
@@ -57,11 +57,13 @@ jobs:
               print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
 
       - name: Install Nox
+        uses: daisylb/setup-nox@v2.1.0
+
+      - name: Install Nox
         run: |
           poetry install
-          # pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
-          # pipx inject --pip-args=--constraint=.github/workflows/constraints.txt nox nox-poetry
-          # nox --version
+          pip install --user nox nox-poetry
+          nox --version
 
       - name: Compute pre-commit cache key
         if: matrix.session == 'pre-commit'
@@ -114,7 +116,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pipx install poetry
+          pip install --user poetry
           poetry --version
 
       - name: Set up Python
@@ -129,10 +131,9 @@ jobs:
 
       - name: Install Nox
         run: |
-          # pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
-          # pipx inject --pip-args=--constraint=.github/workflows/constraints.txt nox nox-poetry
-          # nox --version
           poetry install
+          pip install --user nox nox-poetry
+          nox --version
 
       - name: Download coverage data
         uses: actions/download-artifact@v3
