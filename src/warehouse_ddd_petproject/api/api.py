@@ -1,12 +1,14 @@
-from flask import Blueprint, jsonify, request
+import exceptions
+import model
+import repository
+import services
+from config import build_db_uri
+from flask import Blueprint
+from flask import jsonify
+from flask import request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-import repository
-import model
-import services
-import exceptions
-from config import build_db_uri
 
 engine = create_engine(build_db_uri(".env"))
 get_session = sessionmaker(bind=engine)

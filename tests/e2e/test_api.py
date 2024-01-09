@@ -1,7 +1,9 @@
-import pytest
 import httpx
+import pytest
 
-from helpers import random_sku, random_orderid, random_batchref
+from tests.helpers import random_batchref
+from tests.helpers import random_orderid
+from tests.helpers import random_sku
 
 
 @pytest.mark.usefixtures("restart_api")
@@ -15,13 +17,11 @@ def test_returns_allocation_on_valid_sku(add_stock, api_url):
 
     order_id = random_orderid("spoons")
 
-    add_stock(
-        [
-            (early_batchref, sku1, 20, "2024-01-02"),
-            (later_batchref, sku1, 20, "2024-02-02"),
-            (other_batchref, sku2, 20, None),
-        ]
-    )
+    add_stock([
+        (early_batchref, sku1, 20, "2024-01-02"),
+        (later_batchref, sku1, 20, "2024-02-02"),
+        (other_batchref, sku2, 20, None),
+    ])
 
     response = httpx.post(
         f"{api_url}/allocate", json={"orderid": order_id, "sku": sku1, "qty": 15}

@@ -1,7 +1,14 @@
-from sqlalchemy import Column, Table, Integer, String, Date, ForeignKey
-from sqlalchemy.orm import registry, relationship
+from sqlalchemy import Column
+from sqlalchemy import Date
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import String
+from sqlalchemy import Table
+from sqlalchemy.orm import registry
+from sqlalchemy.orm import relationship
 
-import model
+from . import model
+
 
 mapper_registry = registry()
 metadata = mapper_registry.metadata

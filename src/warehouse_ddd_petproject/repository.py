@@ -1,6 +1,9 @@
-from abc import ABC, abstractmethod
+from abc import ABC
+from abc import abstractmethod
+
 from sqlalchemy.orm import Session
-import model
+
+from warehouse_ddd_petproject import model
 
 
 class AbstractRepository(ABC):
@@ -33,7 +36,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
 
 class FakeRepository(AbstractRepository):
-    def __init__(self, batches: list[model.Batch] = []):
+    def __init__(self, batches: list[model.Batch]):
         self.__batches = set(batches)
 
     def add(self, batch: model.Batch):
