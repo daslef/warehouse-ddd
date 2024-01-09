@@ -2,20 +2,22 @@
 import time
 from pathlib import Path
 
-import pytest
 import httpx
-from sqlalchemy import create_engine, exc
-from sqlalchemy.orm import sessionmaker, clear_mappers
+import pytest
+from sqlalchemy import create_engine
+from sqlalchemy import exc
+from sqlalchemy.orm import clear_mappers
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import text
 
-from db_tables import metadata, start_mappers
-from config import build_api_url, build_db_uri
+from warehouse_ddd_petproject import config
+from warehouse_ddd_petproject import db_tables
 
 
 @pytest.fixture
 def in_memory_db():
     engine = create_engine("sqlite:///:memory:")
-    metadata.create_all(engine)
+    db_tables.metadata.create_all(engine)
     return engine
 
 
@@ -34,7 +36,7 @@ def postgres_db(db_uri):
         except exc.OperationalError:
             time.sleep(DELAY)
         else:
-            metadata.create_all(engine)
+            db_tables.metadata.create_all(engine)
             return engine
 
     pytest.fail("postgres could not start")
@@ -43,7 +45,7 @@ def postgres_db(db_uri):
 @pytest.fixture
 def in_memory_session(in_memory_db):
     try:
-        start_mappers()
+        db_tables.start_mappers()
     except exc.ArgumentError:
         pass
 
@@ -54,7 +56,7 @@ def in_memory_session(in_memory_db):
 @pytest.fixture
 def postgres_session(postgres_db):
     try:
-        start_mappers()
+        db_tables.start_mappers()
     except exc.ArgumentError:
         pass
 
@@ -76,13 +78,13 @@ def fake_session():
 @pytest.fixture(scope="session")
 def db_uri():
     env_path = Path(__file__).parent / ".." / ".env"
-    return build_db_uri(env_path)
+    return config.build_db_uri(env_path)
 
 
 @pytest.fixture
 def api_url():
     env_path = Path(__file__).parent / ".." / ".env"
-    return build_api_url(env_path)
+    return config.build_api_url(env_path)
 
 
 @pytest.fixture
@@ -109,10 +111,8 @@ def add_stock(postgres_session):
     def _add_stock(lines):
         for ref, sku, qty, eta in lines:
             postgres_session.execute(
-                text(
-                    """INSERT INTO batches (reference, sku, initial_quantity, eta)
-                 VALUES (:ref, :sku, :qty, :eta)"""
-                ),
+                text("""INSERT INTO batches (reference, sku, initial_quantity, eta)
+                 VALUES (:ref, :sku, :qty, :eta)"""),
                 dict(ref=ref, sku=sku, qty=qty, eta=eta),
             )
             [[batch_id]] = postgres_session.execute(

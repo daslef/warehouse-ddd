@@ -1,4 +1,5 @@
 """Sphinx configuration."""
+
 project = "Warehouse Ddd"
 author = "Lex Trofimov"
 copyright = "2024, Lex Trofimov"

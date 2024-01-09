@@ -1,11 +1,12 @@
+import model
+import services
+from config import build_db_uri
+from db_tables import metadata
+from db_tables import start_mappers
+from repository import SqlAlchemyRepository
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-import model
-import services
-from repository import SqlAlchemyRepository
-from config import build_db_uri
-from db_tables import start_mappers, metadata
 
 engine = create_engine(build_db_uri(".env"))
 get_session = sessionmaker(bind=engine)

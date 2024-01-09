@@ -1,22 +1,17 @@
-from flask import (
-    Blueprint,
-    request,
-    render_template,
-    redirect,
-    flash,
-)
-from flask_login import login_user, logout_user
-
+import model
+from config import build_db_uri
+from flask import Blueprint
+from flask import flash
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask_login import login_user
+from flask_login import logout_user
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-import model
-from config import build_db_uri
 
-
-auth = Blueprint(
-    "auth", __name__, static_folder="static", template_folder="templates"
-)
+auth = Blueprint("auth", __name__, static_folder="static", template_folder="templates")
 
 engine = create_engine(build_db_uri(".env"))
 get_session = sessionmaker(bind=engine)
@@ -31,11 +26,7 @@ def login():
     password_field = request.form.get("password")
 
     session = get_session()
-    user = (
-        session.query(model.User)
-        .where(model.User.username == login_field)
-        .first()
-    )
+    user = session.query(model.User).where(model.User.username == login_field).first()
 
     if user and user.check_password(password_field):
         login_user(user)
@@ -60,11 +51,7 @@ def signup():
     password_field = request.form.get("password")
 
     session = get_session()
-    user = (
-        session.query(model.User)
-        .where(model.User.username == email_field)
-        .first()
-    )
+    user = session.query(model.User).where(model.User.username == email_field).first()
 
     if user:
         flash("Account already exists. Maybe you want to sign in?", "error")
