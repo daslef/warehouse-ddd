@@ -32,7 +32,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pipx install poetry
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Set up Python ${{ matrix.python }}
@@ -113,7 +113,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pipx install poetry
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Set up Python
