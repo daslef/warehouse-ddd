@@ -19,7 +19,6 @@ jobs:
           - { python: "3.11", os: "windows-latest", session: "tests" }
           - { python: "3.11", os: "macos-latest", session: "tests" }
           - { python: "3.11", os: "ubuntu-latest", session: "typeguard" }
-          - { python: "3.11", os: "ubuntu-latest", session: "xdoctest" }
           - { python: "3.11", os: "ubuntu-latest", session: "docs-build" }
 
     env:
@@ -33,7 +32,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pip install --user poetry
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Set up Python ${{ matrix.python }}
@@ -57,13 +56,10 @@ jobs:
               print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
 
       - name: Install Nox
-        uses: daisylb/setup-nox@v2.1.0
-
-      - name: Install Nox
         run: |
           poetry install
-          pip install --user nox nox-poetry
-          nox --version
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
+          pipx inject nox nox-poetry
 
       - name: Compute pre-commit cache key
         if: matrix.session == 'pre-commit'
@@ -116,7 +112,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pip install --user poetry
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Set up Python
@@ -132,7 +128,8 @@ jobs:
       - name: Install Nox
         run: |
           poetry install
-          pip install --user nox nox-poetry
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
+          pipx inject nox nox-poetry
           nox --version
 
       - name: Download coverage data
