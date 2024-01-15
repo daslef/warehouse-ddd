@@ -8,6 +8,17 @@ jobs:
   tests:
     name: ${{ matrix.session }} ${{ matrix.python }} / ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: secretpassword
+          POSTGRES_USER: user
+          POSTGRES_DB: orders
+        volumes:
+          - orders:/var/lib/postgresql/data
+        ports:
+          - "5432:5432"
     strategy:
       fail-fast: false
       matrix:
@@ -78,6 +89,8 @@ jobs:
             ${{ steps.pre-commit-cache.outputs.result }}-
 
       - name: Run Nox
+        env:
+          DATABASE_URL: postgres://user:secretpassword@127.0.0.1:${{ job.services.postgres.ports['5432'] }}/orders
         run: |
           nox --python=${{ matrix.python }}
 
