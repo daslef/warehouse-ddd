@@ -1,6 +1,3 @@
-import model
-import repository
-from config import build_db_uri
 from flask import Blueprint
 from flask import render_template
 from flask import request
@@ -8,10 +5,14 @@ from flask_login import login_required
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from warehouse_ddd_petproject import config
+from warehouse_ddd_petproject import model
+from warehouse_ddd_petproject import repository
+
 
 admin = Blueprint("admin", __name__, template_folder="templates")
 
-engine = create_engine(build_db_uri(".env"))
+engine = create_engine(config.build_db_uri(".env"))
 get_session = sessionmaker(bind=engine)
 
 

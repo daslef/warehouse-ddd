@@ -1,16 +1,17 @@
-import exceptions
-import model
-import repository
-import services
-from config import build_db_uri
 from flask import Blueprint
 from flask import jsonify
 from flask import request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from warehouse_ddd_petproject import config
+from warehouse_ddd_petproject import exceptions
+from warehouse_ddd_petproject import model
+from warehouse_ddd_petproject import repository
+from warehouse_ddd_petproject import services
 
-engine = create_engine(build_db_uri(".env"))
+
+engine = create_engine(config.build_db_uri(".env"))
 get_session = sessionmaker(bind=engine)
 
 api = Blueprint("api", __name__)
