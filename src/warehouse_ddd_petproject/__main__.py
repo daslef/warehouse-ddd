@@ -7,7 +7,9 @@ import click
 @click.version_option()
 def main() -> None:
     """Warehouse Ddd."""
-    print("I am working")
+    from warehouse_ddd_petproject.flask_app import app
+
+    app.run(debug=True)
 
 
 if __name__ == "__main__":

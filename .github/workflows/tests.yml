@@ -89,6 +89,9 @@ jobs:
         with:
           compose-file: "./src/warehouse_ddd_petproject/docker-compose.yml"
 
+      - name: Wait
+        run: sleep 10
+
       - name: Run Nox
         env:
           DATABASE_URL: postgres://user:secretpassword@127.0.0.1:${{ job.services.postgres.ports['5432'] }}/orders
