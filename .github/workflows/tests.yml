@@ -50,7 +50,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-          cache: "poetry"
 
       - name: Upgrade pip
         run: |
@@ -96,6 +95,10 @@ jobs:
           key: ${{ steps.pre-commit-cache.outputs.result }}-${{ hashFiles('.pre-commit-config.yaml') }}
           restore-keys: |
             ${{ steps.pre-commit-cache.outputs.result }}-
+
+      - uses: isbang/compose-action@v1.5.1
+        with:
+          compose-file: "./src/warehouse_ddd_petproject/docker-compose.yml"
 
       - name: Run Nox
         env:
