@@ -41,24 +41,33 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@v4
 
+      - name: Install Poetry
+        run: |
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+          poetry --version
+
       - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+          cache: "poetry"
 
       - name: Upgrade pip
         run: |
           pip install --constraint=.github/workflows/constraints.txt pip
           pip --version
 
-      - name: Install Poetry
+      - name: Upgrade pip in virtual environments
+        shell: python
         run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
-          poetry --version
+          import os
+          import pip
+
+          with open(os.environ["GITHUB_ENV"], mode="a") as io:
+              print(f"VIRTUALENV_PIP={pip.__version__}", file=io)
 
       - name: Install Nox
         run: |
-          poetry lock
           poetry install
           pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
           pipx inject --pip-args=--constraint=.github/workflows/constraints.txt nox nox-poetry
