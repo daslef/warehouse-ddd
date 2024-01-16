@@ -31,7 +31,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pipx install --constraint=.github/workflows/constraints.txt poetry
+          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Set up Python ${{ matrix.python }}
@@ -41,7 +41,7 @@ jobs:
 
       - name: Upgrade pip
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
+          pip install --pip-args=--constraint=.github/workflows/constraints.txt pip
           pip --version
 
       - name: Upgrade pip in virtual environments
@@ -61,31 +61,8 @@ jobs:
           pipx inject --pip-args=--constraint=.github/workflows/constraints.txt nox nox-poetry
           nox --version
 
-      - name: Compute pre-commit cache key
-        if: matrix.session == 'pre-commit'
-        id: pre-commit-cache
-        shell: python
-        run: |
-          import hashlib
-          import sys
-
-          python = "py{}.{}".format(*sys.version_info[:2])
-          payload = sys.version.encode() + sys.executable.encode()
-          digest = hashlib.sha256(payload).hexdigest()
-          result = "${{ runner.os }}-{}-{}-pre-commit".format(python, digest[:8])
-
-          print("::set-output name=result::{}".format(result))
-
-      - name: Restore pre-commit cache
-        uses: actions/cache@v3
-        if: matrix.session == 'pre-commit'
-        with:
-          path: ~/.cache/pre-commit
-          key: ${{ steps.pre-commit-cache.outputs.result }}-${{ hashFiles('.pre-commit-config.yaml') }}
-          restore-keys: |
-            ${{ steps.pre-commit-cache.outputs.result }}-
-
-      - uses: isbang/compose-action@v1.5.1
+      - name: Start Docker Compose
+        uses: isbang/compose-action@v1.5.1
         with:
           compose-file: "./docker-compose.yml"
 
