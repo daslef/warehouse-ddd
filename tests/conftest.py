@@ -12,6 +12,7 @@ from sqlalchemy.sql import text
 
 from warehouse_ddd_petproject import config
 from warehouse_ddd_petproject import db_tables
+from warehouse_ddd_petproject.flask_app import create_app
 
 
 @pytest.fixture
@@ -23,7 +24,7 @@ def in_memory_db():
 
 @pytest.fixture(scope="session")
 def postgres_db(db_uri):
-    TIMEOUT = 10
+    TIMEOUT = 20
     DELAY = 0.5
 
     engine = create_engine(db_uri)
@@ -101,6 +102,13 @@ def restart_api(api_url):
             time.sleep(DELAY)
 
     pytest.fail("api could not start")
+
+
+@pytest.fixture
+def test_app():
+    app = create_app()
+    with app.app_context():
+        yield app
 
 
 @pytest.fixture

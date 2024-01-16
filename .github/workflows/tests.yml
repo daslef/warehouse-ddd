@@ -56,6 +56,7 @@ jobs:
 
       - name: Install Nox
         run: |
+          poetry lock
           poetry install
           pipx install --pip-args=--constraint=.github/workflows/constraints.txt nox
           pipx inject --pip-args=--constraint=.github/workflows/constraints.txt nox nox-poetry
@@ -93,8 +94,6 @@ jobs:
         run: sleep 10
 
       - name: Run Nox
-        env:
-          DATABASE_URL: postgres://user:secretpassword@127.0.0.1:${{ job.services.postgres.ports['5432'] }}/orders
         run: |
           nox --python=${{ matrix.python }}
 

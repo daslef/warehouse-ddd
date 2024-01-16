@@ -17,7 +17,7 @@ get_session = sessionmaker(bind=engine)
 api = Blueprint("api", __name__)
 
 
-@api.route("/api/allocate", methods=["POST"])
+@api.route("/allocate", methods=["POST"])
 def allocate_endpoint():
     session = get_session()
     repo = repository.SqlAlchemyRepository(session)

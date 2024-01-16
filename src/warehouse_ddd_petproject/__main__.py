@@ -7,8 +7,9 @@ import click
 @click.version_option()
 def main() -> None:
     """Warehouse Ddd."""
-    from warehouse_ddd_petproject.flask_app import app
+    from warehouse_ddd_petproject.flask_app import create_app
 
+    app = create_app()
     app.run(debug=True)
 
 
