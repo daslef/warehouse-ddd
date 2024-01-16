@@ -88,7 +88,7 @@ jobs:
 
       - uses: isbang/compose-action@v1.5.1
         with:
-          compose-file: "./src/warehouse_ddd_petproject/docker-compose.yml"
+          compose-file: "./docker-compose.yml"
 
       - name: Wait
         run: sleep 10
