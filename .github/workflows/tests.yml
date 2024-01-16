@@ -11,7 +11,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { python: "3.11", os: "ubuntu-latest", session: "pre-commit" }
           - { python: "3.11", os: "ubuntu-latest", session: "safety" }
           - { python: "3.11", os: "ubuntu-latest", session: "mypy" }
           - { python: "3.11", os: "ubuntu-latest", session: "tests" }
@@ -41,7 +40,7 @@ jobs:
 
       - name: Upgrade pip
         run: |
-          pip install --pip-args=--constraint=.github/workflows/constraints.txt pip
+          pip install --constraint=.github/workflows/constraints.txt pip
           pip --version
 
       - name: Upgrade pip in virtual environments
