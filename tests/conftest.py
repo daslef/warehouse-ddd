@@ -2,7 +2,6 @@
 import time
 from pathlib import Path
 
-import httpx
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy import exc
@@ -83,28 +82,6 @@ def db_uri():
 
 
 @pytest.fixture
-def api_url():
-    env_path = Path(__file__).parent / ".." / ".env"
-    return config.build_api_url(env_path)
-
-
-@pytest.fixture
-def restart_api(api_url):
-    TIMEOUT = 10
-    DELAY = 0.5
-
-    deadline = time.time() + TIMEOUT
-
-    while time.time() < deadline:
-        try:
-            return httpx.get(api_url)
-        except (httpx.ConnectTimeout, httpx.ConnectError):
-            time.sleep(DELAY)
-
-    pytest.fail("api could not start")
-
-
-@pytest.fixture
 def test_app():
     app = create_app()
     with app.app_context():
@@ -119,12 +96,16 @@ def add_stock(postgres_session):
     def _add_stock(lines):
         for ref, sku, qty, eta in lines:
             postgres_session.execute(
-                text("""INSERT INTO batches (reference, sku, initial_quantity, eta)
-                 VALUES (:ref, :sku, :qty, :eta)"""),
+                text(
+                    """INSERT INTO batches (reference, sku, initial_quantity, eta)
+                 VALUES (:ref, :sku, :qty, :eta)"""
+                ),
                 dict(ref=ref, sku=sku, qty=qty, eta=eta),
             )
             [[batch_id]] = postgres_session.execute(
-                text("SELECT id FROM batches WHERE reference=:ref AND sku=:sku"),
+                text(
+                    "SELECT id FROM batches WHERE reference=:ref AND sku=:sku"
+                ),
                 dict(ref=ref, sku=sku),
             )
             batches_added.add(batch_id)

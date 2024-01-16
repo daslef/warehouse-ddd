@@ -8,11 +8,12 @@ from flask_login import logout_user
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from warehouse_ddd_petproject import config
-from warehouse_ddd_petproject import model
+from warehouse_ddd_petproject import config, model
 
 
-auth = Blueprint("auth", __name__, static_folder="static", template_folder="templates")
+auth = Blueprint(
+    "auth", __name__, static_folder="static", template_folder="templates"
+)
 
 engine = create_engine(config.build_db_uri(".env"))
 get_session = sessionmaker(bind=engine)
@@ -27,7 +28,11 @@ def login():
     password_field = request.form.get("password")
 
     session = get_session()
-    user = session.query(model.User).where(model.User.username == login_field).first()
+    user = (
+        session.query(model.User)
+        .where(model.User.username == login_field)
+        .first()
+    )
 
     if user and user.check_password(password_field):
         login_user(user)
@@ -52,7 +57,11 @@ def signup():
     password_field = request.form.get("password")
 
     session = get_session()
-    user = session.query(model.User).where(model.User.username == email_field).first()
+    user = (
+        session.query(model.User)
+        .where(model.User.username == email_field)
+        .first()
+    )
 
     if user:
         flash("Account already exists. Maybe you want to sign in?", "error")

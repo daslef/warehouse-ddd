@@ -5,9 +5,7 @@ from flask_login import login_required
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from warehouse_ddd_petproject import config
-from warehouse_ddd_petproject import model
-from warehouse_ddd_petproject import repository
+from warehouse_ddd_petproject import config, model, repository
 
 
 admin = Blueprint("admin", __name__, template_folder="templates")
@@ -43,4 +41,6 @@ def admin_view():
     batches = repo.list()
     allocations = [b.allocations for b in batches]
 
-    return render_template("admin/admin.html", orderlines=allocations, batches=batches)
+    return render_template(
+        "admin/admin.html", orderlines=allocations, batches=batches
+    )

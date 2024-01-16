@@ -3,7 +3,7 @@ from tests.helpers import random_orderid
 from tests.helpers import random_sku
 
 
-def test_returns_allocation_on_valid_sku(add_stock, api_url, test_app):
+def test_returns_allocation_on_valid_sku(add_stock, test_app):
     sku1 = random_sku("spoons")
     sku2 = random_sku("other")
 
@@ -30,7 +30,7 @@ def test_returns_allocation_on_valid_sku(add_stock, api_url, test_app):
     assert response.json["batchref"] == early_batchref
 
 
-def test_invalid_sku_returns_400_with_message(api_url, test_app):
+def test_invalid_sku_returns_400_with_message(test_app):
     unknown_sku = random_sku("table")
     orderid = random_orderid("spoon")
 
@@ -44,7 +44,7 @@ def test_invalid_sku_returns_400_with_message(api_url, test_app):
     assert response.json["message"] == f"Invalid sku {unknown_sku}"
 
 
-def test_outofstock_returns_400_with_message(api_url, add_stock, test_app):
+def test_outofstock_returns_400_with_message(add_stock, test_app):
     sku = random_sku("table-small")
     small_batchref = random_batchref("table-small")
     large_order_id = random_orderid(1)
