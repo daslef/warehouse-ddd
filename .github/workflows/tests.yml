@@ -2,7 +2,6 @@ name: Tests
 
 on:
   - push
-  - pull_request
 
 jobs:
   tests:
@@ -32,7 +31,7 @@ jobs:
 
       - name: Install Poetry
         run: |
-          pipx install --pip-args=--constraint=.github/workflows/constraints.txt poetry
+          pipx install --constraint=.github/workflows/constraints.txt poetry
           poetry --version
 
       - name: Set up Python ${{ matrix.python }}
