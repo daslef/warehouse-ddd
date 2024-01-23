@@ -81,7 +81,7 @@ def db_uri():
     return config.build_db_uri(env_path)
 
 
-@pytest.fixture
+@pytest.fixture()
 def test_app():
     app = create_app()
     with app.app_context():

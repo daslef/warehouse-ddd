@@ -42,10 +42,23 @@ def insert_batch(session, batch_id):
         dict(batch_id=batch_id),
     )
     [[batch_id]] = session.execute(
-        text('SELECT id FROM batches WHERE reference=:batch_id AND sku="GENERIC-SOFA"'),
+        text(
+            "SELECT id FROM batches WHERE reference=:batch_id AND"
+            ' sku="GENERIC-SOFA"'
+        ),
         dict(batch_id=batch_id),
     )
     return batch_id
+
+
+def insert_batch_uow(session, ref, sku, qty, eta):
+    session.execute(
+        text(
+            "INSERT INTO batches (reference, sku, initial_quantity, eta)"
+            " VALUES (:ref, :sku, :qty, :eta)"
+        ),
+        dict(ref=ref, sku=sku, qty=qty, eta=eta),
+    )
 
 
 def insert_allocation(session, orderline_id, batch_id):
@@ -62,13 +75,31 @@ def get_allocations(session, batchid):
     rows = list(
         session.execute(
             text(
-                "SELECT orderid"
-                " FROM allocations"
-                " JOIN order_lines ON allocations.orderline_id = order_lines.id"
-                " JOIN batches ON allocations.batch_id = batches.id"
-                " WHERE batches.reference = :batchid"
+                "SELECT orderid FROM allocations JOIN order_lines ON"
+                " allocations.orderline_id = order_lines.id JOIN batches ON"
+                " allocations.batch_id = batches.id WHERE batches.reference ="
+                " :batchid"
             ),
             dict(batchid=batchid),
         )
     )
     return {row[0] for row in rows}
+
+
+def get_allocated_batch_ref(session, orderid, sku):
+    [[orderlineid]] = session.execute(
+        text(
+            "SELECT id FROM order_lines WHERE orderid=:orderid AND sku=:sku"
+            " LIMIT 1"
+        ),
+        dict(orderid=orderid, sku=sku),
+    )
+
+    [[batchref]] = session.execute(
+        text(
+            "SELECT b.reference FROM allocations JOIN batches AS b ON batch_id"
+            " = b.id WHERE orderline_id=:orderlineid LIMIT 1"
+        ),
+        dict(orderlineid=orderlineid),
+    )
+    return batchref

@@ -4,32 +4,33 @@ from warehouse_ddd_petproject import exceptions
 from warehouse_ddd_petproject import model
 from warehouse_ddd_petproject import repository
 from warehouse_ddd_petproject import services
+from warehouse_ddd_petproject import unit_of_work
 
 
-def test_returns_allocation_on_valid_sku(fake_session):
+def test_returns_allocation_on_valid_sku():
     line = model.OrderLine("table-001", "table", 20)
     batch = model.Batch("batch-001", "table", 30, None)
-    repo = repository.FakeRepository([batch])
-    session = fake_session()
 
-    assert services.allocate(line, repo, session) == "batch-001"
+    uow = unit_of_work.FakeUnitOfWork(repository.FakeRepository([batch]))
+
+    assert services.allocate(line, uow) == "batch-001"
 
 
-def test_raises_error_on_invalid_sku(fake_session):
+def test_raises_error_on_invalid_sku():
     line = model.OrderLine("table-001", "table", 20)
     batch = model.Batch("batch-001", "spoon", 30, None)
-    repo = repository.FakeRepository([batch])
-    session = fake_session()
+
+    uow = unit_of_work.FakeUnitOfWork(repository.FakeRepository([batch]))
 
     with pytest.raises(exceptions.InvalidSku):
-        services.allocate(line, repo, session)
+        services.allocate(line, uow)
 
 
-def test_raises_error_on_outofstock(fake_session):
+def test_raises_error_on_outofstock():
     line = model.OrderLine("table-001", "table", 40)
     batch = model.Batch("batch-001", "table", 30, None)
-    repo = repository.FakeRepository([batch])
-    session = fake_session()
+
+    uow = unit_of_work.FakeUnitOfWork(repository.FakeRepository([batch]))
 
     with pytest.raises(exceptions.OutOfStock):
-        services.allocate(line, repo, session)
+        services.allocate(line, uow)
