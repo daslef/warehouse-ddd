@@ -1,3 +1,4 @@
+from datetime import date
 from flask import Blueprint
 from flask import render_template
 from flask import request
@@ -16,7 +17,7 @@ get_session = sessionmaker(bind=engine)
 
 @admin.route("/batches", methods=["GET", "POST"])
 @login_required
-def admin_batches_view():
+def admin_batches_view() -> str:
     session = get_session()
     repo = repository.SqlAlchemyRepository(session)
 
@@ -25,6 +26,11 @@ def admin_batches_view():
         sku = request.form.get("sku")
         qty = request.form.get("qty")
         eta = request.form.get("eta")
+
+        assert isinstance(reference, str)
+        assert isinstance(sku, str)
+        assert isinstance(qty, int)
+        assert isinstance(eta, (date, None))
 
         repo.add(model.Batch(reference, sku, qty, eta))
         session.commit()
@@ -35,7 +41,7 @@ def admin_batches_view():
 
 @admin.route("/")
 @login_required
-def admin_view():
+def admin_view() -> str:
     session = get_session()
     repo = repository.SqlAlchemyRepository(session)
     batches = repo.list()

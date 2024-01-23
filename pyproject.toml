@@ -57,11 +57,10 @@ warehouse-ddd = "warehouse_ddd_petproject.__main__:main"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
-tests = ["tests", "*/tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["warehouse_ddd_petproject", "tests"]
+source = ["warehouse_ddd_petproject"]
 
 [tool.coverage.report]
 show_missing = true
@@ -79,6 +78,10 @@ pretty = true
 show_column_numbers = true
 show_error_codes = true
 show_error_context = true
+
+[[tool.mypy.overrides]]
+module = "flask_login"
+ignore_missing_imports = true
 
 [tool.black]
 line-length = 88

@@ -12,7 +12,7 @@ from warehouse_ddd_petproject.api.api import api
 from warehouse_ddd_petproject.auth.auth import auth
 
 
-def create_app(test_config: bool = False):
+def create_app(test_config: bool = False) -> Flask:
     engine = create_engine(config.build_db_uri(".env"))
     get_session = sessionmaker(bind=engine)
 
@@ -31,7 +31,7 @@ def create_app(test_config: bool = False):
     login_manager.init_app(app)
 
     @login_manager.user_loader
-    def load_user(user_id: str):
+    def load_user(user_id: str) -> model.User | int:
         session = get_session()
         return session.get(model.User, int(user_id))
 

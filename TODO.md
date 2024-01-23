@@ -1,13 +1,14 @@
 рефакторинг:
 
-- кукикаттер
-- ddd
+[x] кукикаттер
+[x] ddd
+
 - uow
 
 девопс:
 
 - пре-коммит хуки
-- гитхаб экшнз
+  [x] гитхаб экшнз
   https://jacobian.org/til/github-actions-poetry/
 - деплой на рендер
   https://github.com/marketplace/actions/render-deploy-action
@@ -21,7 +22,8 @@
 
 тесты:
 
-- тесты фласка
+[x] тесты фласка
+
 - тесты постмана
 - типизация и тесты типов
 

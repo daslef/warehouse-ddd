@@ -1,26 +1,17 @@
-import model
-import services
-from config import build_db_uri
-from db_tables import metadata
-from db_tables import start_mappers
-from repository import SqlAlchemyRepository
+from warehouse_ddd_petproject import (
+    model,
+    services,
+    config,
+    db_tables,
+    repository,
+)
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
 
-engine = create_engine(build_db_uri(".env"))
-get_session = sessionmaker(bind=engine)
-
-try:
-    metadata.create_all(bind=engine)
-    start_mappers()
-except Exception:
-    pass
-
-
-def seed_db():
-    session = get_session()
-    repo = SqlAlchemyRepository(session)
+def seed_db(session: Session) -> None:
+    repo = repository.SqlAlchemyRepository(session)
 
     lines = (
         model.OrderLine("table-001", "table", 10),
@@ -44,4 +35,14 @@ def seed_db():
         services.allocate(line, repo, session)
 
 
-seed_db()
+if __name__ == "__main__":
+    engine = create_engine(config.build_db_uri(".env"))
+    get_session = sessionmaker(bind=engine)
+
+    try:
+        db_tables.metadata.create_all(bind=engine)
+        db_tables.start_mappers()
+    except Exception:
+        pass
+
+    seed_db(get_session())

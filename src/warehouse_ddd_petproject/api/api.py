@@ -1,6 +1,9 @@
+from typing import cast
+
 from flask import Blueprint
 from flask import jsonify
 from flask import request
+from flask import Response
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -18,12 +21,15 @@ api = Blueprint("api", __name__)
 
 
 @api.route("/allocate", methods=["POST"])
-def allocate_endpoint():
+def allocate_endpoint() -> tuple[Response, int]:
     session = get_session()
     repo = repository.SqlAlchemyRepository(session)
-    line = model.OrderLine(
-        request.json["orderid"], request.json["sku"], request.json["qty"]
-    )
+
+    orderid = cast(str, request.json["orderid"])
+    sku = cast(str, request.json["sku"])
+    qty = cast(int, request.json["qty"])
+
+    line = model.OrderLine(orderid, sku, qty)
 
     try:
         batchref = services.allocate(line, repo, session)

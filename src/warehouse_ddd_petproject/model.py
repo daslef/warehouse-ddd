@@ -9,11 +9,11 @@ from .exceptions import OutOfStock
 
 
 class User(UserMixin):
-    def __init__(self, username: str, password: str):
+    def __init__(self, username: str, password: str) -> None:
         self.username = username
         self.password_hash = generate_password_hash(password)
 
-    def check_password(self, password: str):
+    def check_password(self, password: str) -> bool:
         return check_password_hash(self.password_hash, password)
 
 
@@ -25,24 +25,24 @@ class OrderLine:
         self.sku = sku
         self.qty = qty
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.orderid, self.sku, self.qty))
 
-    def __eq__(self, other_order_line) -> bool:
+    def __eq__(self, other_order_line: Self) -> bool:
         return hash(self) == hash(other_order_line)
 
 
 class Batch:
     """Партия."""
 
-    def __init__(self, reference: str, sku: str, qty: int, eta: date | None = None):
+    def __init__(self, reference: str, sku: str, qty: int, eta: date | None = None) -> None:
         self.reference = reference
         self.sku = sku
         self.initial_quantity = qty
         self.eta = eta
-        self.allocations = set()
+        self.allocations: set[OrderLine] = set()
 
-    def __eq__(self, other_batch) -> bool:
+    def __eq__(self, other_batch: Self) -> bool:
         return self.reference == other_batch.reference
 
     def __hash__(self) -> int:
@@ -56,11 +56,11 @@ class Batch:
         return self.eta > other_batch.eta
 
     @property
-    def allocated_quantity(self):
+    def allocated_quantity(self) -> int:
         return sum(line.qty for line in self.allocations)
 
     @property
-    def available_quantity(self):
+    def available_quantity(self) -> int:
         return self.initial_quantity - self.allocated_quantity
 
     def allocate(self, line: OrderLine) -> None:

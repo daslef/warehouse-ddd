@@ -3,6 +3,7 @@ from flask import flash
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import Response
 from flask_login import login_user
 from flask_login import logout_user
 from sqlalchemy import create_engine
@@ -20,7 +21,7 @@ get_session = sessionmaker(bind=engine)
 
 
 @auth.route("/login", methods=["GET", "POST"])
-def login():
+def login() -> str | Response:
     if request.method == "GET":
         return render_template("auth/login.html")
 
@@ -43,18 +44,18 @@ def login():
 
 
 @auth.route("/logout")
-def logout():
+def logout() -> Response:
     logout_user()
     return redirect("/auth/login")
 
 
 @auth.route("/signup", methods=["GET", "POST"])
-def signup():
+def signup() -> str | Response:
     if request.method == "GET":
         return render_template("auth/signup.html")
 
-    email_field = request.form.get("email")
-    password_field = request.form.get("password")
+    email_field = request.form.get("email", "")
+    password_field = request.form.get("password", "")
 
     session = get_session()
     user = (

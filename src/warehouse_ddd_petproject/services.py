@@ -2,9 +2,11 @@ from warehouse_ddd_petproject import exceptions
 from warehouse_ddd_petproject import model
 from warehouse_ddd_petproject import repository
 
+from sqlalchemy.orm import Session
+
 
 def allocate(
-    line: model.OrderLine, repo: repository.AbstractRepository, session
+    line: model.OrderLine, repo: repository.AbstractRepository, session: Session
 ) -> str:
     batches = repo.list()
 
