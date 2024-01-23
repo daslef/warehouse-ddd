@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from warehouse_ddd_petproject import config
 from warehouse_ddd_petproject import exceptions
 from warehouse_ddd_petproject import model
-from warehouse_ddd_petproject import repository
+from warehouse_ddd_petproject import unit_of_work
 from warehouse_ddd_petproject import services
 
 
@@ -22,8 +22,7 @@ api = Blueprint("api", __name__)
 
 @api.route("/allocate", methods=["POST"])
 def allocate_endpoint() -> tuple[Response, int]:
-    session = get_session()
-    repo = repository.SqlAlchemyRepository(session)
+    uow = unit_of_work.SqlAlchemyUnitOfWork(get_session())
 
     orderid = cast(str, request.json["orderid"])
     sku = cast(str, request.json["sku"])
@@ -32,7 +31,7 @@ def allocate_endpoint() -> tuple[Response, int]:
     line = model.OrderLine(orderid, sku, qty)
 
     try:
-        batchref = services.allocate(line, repo, session)
+        batchref = services.allocate(line, uow)
     except (exceptions.OutOfStock, exceptions.InvalidSku) as e:
         return jsonify({"message": str(e)}), 400
 

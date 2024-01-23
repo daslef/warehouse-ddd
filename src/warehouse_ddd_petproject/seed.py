@@ -3,7 +3,7 @@ from warehouse_ddd_petproject import (
     services,
     config,
     db_tables,
-    repository,
+    unit_of_work,
 )
 
 from sqlalchemy import create_engine
@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker, Session
 
 
 def seed_db(session: Session) -> None:
-    repo = repository.SqlAlchemyRepository(session)
+    uow = unit_of_work.SqlAlchemyUnitOfWork(session)
 
     lines = (
         model.OrderLine("table-001", "table", 10),
@@ -24,15 +24,17 @@ def seed_db(session: Session) -> None:
     batch_tables = model.Batch("batch-001", "table", 100, None)
     batch_chairs = model.Batch("batch-002", "chair", 20, None)
 
-    repo.add(batch_tables)
-    repo.add(batch_chairs)
+    with uow:
+        uow.batches.add(batch_tables)
+        uow.batches.add(batch_chairs)
+
+        for line in lines:
+            services.allocate(line, uow)
+
+        uow.commit()
 
     session.add(model.User("test@gmail.com", "testpassword"))
-
     session.commit()
-
-    for line in lines:
-        services.allocate(line, repo, session)
 
 
 if __name__ == "__main__":

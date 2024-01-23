@@ -24,13 +24,14 @@ def admin_batches_view() -> str:
     if request.method == "POST":
         reference = request.form.get("reference")
         sku = request.form.get("sku")
-        qty = request.form.get("qty")
+        qty = int(request.form.get("qty"))
         eta = request.form.get("eta")
 
         assert isinstance(reference, str)
         assert isinstance(sku, str)
-        assert isinstance(qty, int)
-        assert isinstance(eta, (date, None))
+
+        if eta:
+            eta = date(eta)
 
         repo.add(model.Batch(reference, sku, qty, eta))
         session.commit()

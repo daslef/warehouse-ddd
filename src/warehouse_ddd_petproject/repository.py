@@ -8,15 +8,15 @@ from warehouse_ddd_petproject import model
 
 class AbstractRepository(ABC):
     @abstractmethod
-    def add(self, batch: model.Batch) -> None: # pragma: no cover
+    def add(self, batch: model.Batch) -> None:  # pragma: no cover
         raise NotImplementedError
 
     @abstractmethod
-    def get(self, reference: str) -> model.Batch: # pragma: no cover
+    def get(self, reference: str) -> model.Batch:  # pragma: no cover
         raise NotImplementedError
 
     @abstractmethod
-    def list(self) -> list[model.Batch]: # pragma: no cover
+    def list(self) -> list[model.Batch]:  # pragma: no cover
         raise NotImplementedError
 
 
@@ -29,7 +29,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
     def get(self, reference: str) -> model.Batch:
         batches = self.__session.query(model.Batch)
-        return batches.filter_by(reference=reference).one()
+        return batches.filter_by(reference=reference).first()
 
     def list(self) -> list[model.Batch]:
         return self.__session.query(model.Batch).all()
