@@ -8,6 +8,7 @@ from sqlalchemy.orm import registry
 from sqlalchemy.orm import relationship
 
 from warehouse_ddd_petproject import model
+import warehouse_ddd_petproject.auth.model  # FIXME
 
 
 mapper_registry = registry()
@@ -50,7 +51,9 @@ allocations = Table(
 
 
 def start_mappers() -> None:
-    lines_mapper = mapper_registry.map_imperatively(model.OrderLine, order_lines)
+    lines_mapper = mapper_registry.map_imperatively(
+        model.OrderLine, order_lines
+    )
     mapper_registry.map_imperatively(
         model.Batch,
         batches,
@@ -62,7 +65,9 @@ def start_mappers() -> None:
             )
         },
     )
-    mapper_registry.map_imperatively(model.User, users)
+    mapper_registry.map_imperatively(
+        warehouse_ddd_petproject.auth.model.User, users
+    )
 
 
 start_mappers()

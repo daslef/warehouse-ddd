@@ -4,25 +4,22 @@ from flask import Blueprint
 from flask import jsonify
 from flask import request
 from flask import Response
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-from warehouse_ddd_petproject import config
-from warehouse_ddd_petproject import exceptions
-from warehouse_ddd_petproject import model
-from warehouse_ddd_petproject import unit_of_work
-from warehouse_ddd_petproject import services
+from warehouse_ddd_petproject import (
+    exceptions,
+    model,
+    unit_of_work,
+    services,
+    session,
+)
 
-
-engine = create_engine(config.build_db_uri(".env"))
-get_session = sessionmaker(bind=engine)
 
 api = Blueprint("api", __name__)
 
 
 @api.route("/allocate", methods=["POST"])
 def allocate_endpoint() -> tuple[Response, int]:
-    uow = unit_of_work.SqlAlchemyUnitOfWork(get_session())
+    uow = unit_of_work.SqlAlchemyUnitOfWork(session.SessionManager())
 
     orderid = cast(str, request.json["orderid"])
     sku = cast(str, request.json["sku"])

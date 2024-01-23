@@ -1,13 +1,15 @@
 from warehouse_ddd_petproject import (
+    auth,
     model,
     services,
     config,
     db_tables,
     unit_of_work,
+    session,
 )
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import Session
 
 
 def seed_db(session: Session) -> None:
@@ -33,13 +35,12 @@ def seed_db(session: Session) -> None:
 
         uow.commit()
 
-    session.add(model.User("test@gmail.com", "testpassword"))
+    session.add(auth.model.User("test@gmail.com", "testpassword"))
     session.commit()
 
 
 if __name__ == "__main__":
     engine = create_engine(config.build_db_uri(".env"))
-    get_session = sessionmaker(bind=engine)
 
     try:
         db_tables.metadata.create_all(bind=engine)
@@ -47,4 +48,4 @@ if __name__ == "__main__":
     except Exception:
         pass
 
-    seed_db(get_session())
+    seed_db(session.SessionManager())

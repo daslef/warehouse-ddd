@@ -1,11 +1,11 @@
 from flask_login import FlaskLoginClient
-from warehouse_ddd_petproject import model
+from warehouse_ddd_petproject import auth
 
 
 def test_admin_dashboard(test_app, postgres_session):
     admin_user = (
-        postgres_session.query(model.User)
-        .where(model.User.username == "test@gmail.com")
+        postgres_session.query(auth.model.User)
+        .where(auth.model.User.username == "test@gmail.com")
         .first()
     )
 
@@ -24,8 +24,8 @@ def test_admin_dashboard(test_app, postgres_session):
 
 def test_admin_batches_get(test_app, postgres_session):
     admin_user = (
-        postgres_session.query(model.User)
-        .where(model.User.username == "test@gmail.com")
+        postgres_session.query(auth.model.User)
+        .where(auth.model.User.username == "test@gmail.com")
         .first()
     )
 
@@ -44,8 +44,8 @@ def test_admin_batches_get(test_app, postgres_session):
 
 def test_admin_batches_post(test_app, postgres_session):
     admin_user = (
-        postgres_session.query(model.User)
-        .where(model.User.username == "test@gmail.com")
+        postgres_session.query(auth.model.User)
+        .where(auth.model.User.username == "test@gmail.com")
         .first()
     )
 
