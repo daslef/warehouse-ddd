@@ -1,10 +1,10 @@
 import pytest
 
-from warehouse_ddd_petproject import exceptions
-from warehouse_ddd_petproject import model
-from warehouse_ddd_petproject import repository
-from warehouse_ddd_petproject import services
-from warehouse_ddd_petproject import unit_of_work
+from warehouse_ddd_petproject.domain import exceptions
+from warehouse_ddd_petproject.domain import model
+from warehouse_ddd_petproject.domain import repository
+from warehouse_ddd_petproject.domain import services
+from warehouse_ddd_petproject.domain import unit_of_work
 
 
 def test_returns_allocation_on_valid_sku():

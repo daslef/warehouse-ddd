@@ -5,13 +5,10 @@ from flask import jsonify
 from flask import request
 from flask import Response
 
-from warehouse_ddd_petproject import (
-    exceptions,
-    model,
-    unit_of_work,
-    services,
+from warehouse_ddd_petproject.infrastructure import (
     session,
 )
+from warehouse_ddd_petproject.domain import exceptions, model, services, unit_of_work
 
 
 api = Blueprint("api", __name__)

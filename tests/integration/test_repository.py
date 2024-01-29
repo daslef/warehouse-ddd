@@ -1,8 +1,8 @@
 from sqlalchemy.sql import text
 
 from tests import helpers
-from warehouse_ddd_petproject import model
-from warehouse_ddd_petproject import repository
+from warehouse_ddd_petproject.domain import model
+from warehouse_ddd_petproject.domain import repository
 
 
 def test_repository_can_save_a_batch(in_memory_session):

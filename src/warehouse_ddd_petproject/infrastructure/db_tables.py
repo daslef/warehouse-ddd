@@ -1,14 +1,20 @@
-from sqlalchemy import Column
-from sqlalchemy import Date
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import Table
-from sqlalchemy.orm import registry
-from sqlalchemy.orm import relationship
+from sqlalchemy import (
+    Column,
+    Date,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    create_engine,
+)
+from sqlalchemy.orm import registry, relationship
 
-from warehouse_ddd_petproject import model
 import warehouse_ddd_petproject.auth.model  # FIXME
+
+from warehouse_ddd_petproject.infrastructure import (
+    config,
+)
+from warehouse_ddd_petproject.domain import model
 
 
 mapper_registry = registry()
@@ -70,4 +76,16 @@ def start_mappers() -> None:
     )
 
 
-start_mappers()
+def create_tables():
+    engine = create_engine(config.build_db_uri(".env"))
+
+    try:
+        metadata.create_all(bind=engine)
+        start_mappers()
+    except Exception:
+        pass
+
+
+if __name__ == "__main__":
+    create_tables()
+    start_mappers()

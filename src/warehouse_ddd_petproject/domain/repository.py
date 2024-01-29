@@ -3,7 +3,7 @@ from abc import abstractmethod
 
 from sqlalchemy.orm import Session
 
-from warehouse_ddd_petproject import model
+from warehouse_ddd_petproject.domain import model
 
 
 class AbstractRepository(ABC):

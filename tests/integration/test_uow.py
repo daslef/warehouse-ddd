@@ -1,5 +1,6 @@
 from tests import helpers
-from warehouse_ddd_petproject import model, unit_of_work, services, repository
+from warehouse_ddd_petproject.domain import repository
+from warehouse_ddd_petproject.domain import model, services, unit_of_work
 
 
 def test_uow_can_retrieve_a_batch_and_allocate_to_it(postgres_session):

@@ -1,4 +1,5 @@
-from warehouse_ddd_petproject import seed, repository, model
+from warehouse_ddd_petproject.infrastructure import seed
+from warehouse_ddd_petproject.domain import model, repository
 
 
 def test_seed(postgres_session):

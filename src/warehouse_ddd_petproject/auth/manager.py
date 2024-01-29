@@ -1,6 +1,6 @@
 from flask_login import LoginManager
 
-from warehouse_ddd_petproject import session
+from warehouse_ddd_petproject.infrastructure import session
 from .model import User
 
 

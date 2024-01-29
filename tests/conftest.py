@@ -9,8 +9,8 @@ from sqlalchemy.orm import clear_mappers
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import text
 
-from warehouse_ddd_petproject import config
-from warehouse_ddd_petproject import db_tables
+from warehouse_ddd_petproject.infrastructure import config
+from warehouse_ddd_petproject.infrastructure import db_tables
 from warehouse_ddd_petproject.flask_app import create_app
 
 

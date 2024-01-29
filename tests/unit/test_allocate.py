@@ -3,8 +3,8 @@ from datetime import timedelta
 
 import pytest
 
-from warehouse_ddd_petproject import exceptions
-from warehouse_ddd_petproject import model
+from warehouse_ddd_petproject.domain import exceptions
+from warehouse_ddd_petproject.domain import model
 
 
 def test_prefers_warehouse_batches_to_shipments():

@@ -6,7 +6,7 @@ from flask import request
 from flask import Response
 from flask_login import login_user, logout_user
 
-from warehouse_ddd_petproject import session
+from warehouse_ddd_petproject.infrastructure import session
 from .model import User
 
 auth = Blueprint(

@@ -1,15 +1,11 @@
 from warehouse_ddd_petproject import (
     auth,
-    model,
-    services,
-    config,
-    db_tables,
-    unit_of_work,
-    session,
 )
 
-from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+
+from warehouse_ddd_petproject.domain import model, services, unit_of_work
+from warehouse_ddd_petproject.infrastructure import db_tables, session
 
 
 def seed_db(session: Session) -> None:
@@ -40,12 +36,5 @@ def seed_db(session: Session) -> None:
 
 
 if __name__ == "__main__":
-    engine = create_engine(config.build_db_uri(".env"))
-
-    try:
-        db_tables.metadata.create_all(bind=engine)
-        db_tables.start_mappers()
-    except Exception:
-        pass
-
+    db_tables.create_tables()
     seed_db(session.SessionManager())

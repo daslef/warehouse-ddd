@@ -5,7 +5,8 @@ from flask import request
 from flask_login import login_required
 
 
-from warehouse_ddd_petproject import model, session, unit_of_work
+from warehouse_ddd_petproject.infrastructure import session
+from warehouse_ddd_petproject.domain import model, unit_of_work
 
 
 admin = Blueprint("admin", __name__, template_folder="templates")

@@ -1,7 +1,7 @@
 from typing import Self
 from abc import ABC, abstractmethod
 from sqlalchemy.orm import Session
-from warehouse_ddd_petproject.repository import (
+from warehouse_ddd_petproject.domain.repository import (
     SqlAlchemyRepository,
     FakeRepository,
 )

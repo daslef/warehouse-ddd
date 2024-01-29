@@ -1,6 +1,6 @@
 from datetime import date
 
-from warehouse_ddd_petproject import model
+from warehouse_ddd_petproject.domain import model
 
 
 def test_allocating_to_a_batch_reduces_the_available_quantity():

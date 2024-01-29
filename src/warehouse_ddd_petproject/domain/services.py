@@ -1,8 +1,6 @@
-from warehouse_ddd_petproject import exceptions
-from warehouse_ddd_petproject import model
-from warehouse_ddd_petproject import unit_of_work
-
-# from sqlalchemy.orm import Session
+from warehouse_ddd_petproject.domain import exceptions
+from warehouse_ddd_petproject.domain import model
+from warehouse_ddd_petproject.domain import unit_of_work
 
 
 def allocate(

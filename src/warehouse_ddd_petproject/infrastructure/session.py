@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
-from warehouse_ddd_petproject import config
+from warehouse_ddd_petproject.infrastructure import config
 
 
 class SessionManager:
