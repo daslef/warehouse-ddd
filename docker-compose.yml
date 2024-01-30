@@ -1,13 +1,14 @@
-version: '3'
+version: "3"
 
 services:
   postgres:
-    image: postgres
+    image: satrapu/postgresql
     restart: always
     environment:
       POSTGRES_PASSWORD: secretpassword
       POSTGRES_USER: user
       POSTGRES_DB: orders
+      POSTGRES_HOST: 127.0.0.1
     volumes:
       - orders:/var/lib/postgresql/data
     ports:

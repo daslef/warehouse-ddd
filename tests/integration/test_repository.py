@@ -1,8 +1,8 @@
 from sqlalchemy.sql import text
 
-import model
-import repository
-import helpers
+from tests import helpers
+from warehouse_ddd_petproject.domain import model
+from warehouse_ddd_petproject.domain import repository
 
 
 def test_repository_can_save_a_batch(in_memory_session):
@@ -24,10 +24,13 @@ def test_repository_can_save_a_batch(in_memory_session):
 
 def test_repository_can_retrieve_a_batch_with_allocations(in_memory_session):
     """
-    arrange: получить фикстуру сессии, добавить товарную позицию, батч и размещение в БД
-    act: инициализировать репозиторий Sql, получить добавленный батч по идентификатору
-    assert: сравнить полученный из репозитория батч с правильным ("batch1", "GENERIC-SOFA", 100, eta=None)
-    по __eq__, сравнить их sku, initial_quantity и _allocations
+    arrange: получить фикстуру сессии, добавить товарную позицию,
+    батч и размещение в БД
+    act: инициализировать репозиторий Sql, получить добавленный
+    батч по идентификатору
+    assert: сравнить полученный из репозитория батч с правильным
+    ("batch1", "GENERIC-SOFA", 100, eta=None) по __eq__, сравнить
+    их sku, initial_quantity и _allocations
     """
     expected = model.Batch("batch-001", "GENERIC-SOFA", 100, None)
 
@@ -61,11 +64,14 @@ def test_repository_can_retrieve_batches_list(in_memory_session):
 
 def test_updating_a_batch(in_memory_session):
     """
-    arrange: получить фикстуру сессии, создать два заказа (две товарные позиции) и один батч,
-             разместить в нем первый заказ; инициализировать репозиторий Sql, добавить в него батч,
-             сделать коммит;
-    act: разместить в батче второй заказ, добавить в репозиторий, сделать коммит;
-    assert: проверить (c помощью get_allocations), что были размещены обе товарные позиции (оба заказа);
+    arrange: получить фикстуру сессии, создать два заказа
+        (две товарные позиции) и один батч,
+        разместить в нем первый заказ; инициализировать
+        репозиторий Sql, добавить в него батч, сделать коммит;
+    act: разместить в батче второй заказ, добавить в репозиторий,
+        сделать коммит;
+    assert: проверить (c помощью get_allocations), что были
+        размещены обе товарные позиции (оба заказа);
     """
 
     batch = model.Batch("batch-001", "GENERIC-SOFA", 100, None)

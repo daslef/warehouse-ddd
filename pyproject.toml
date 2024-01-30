@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "warehouse-ddd"
-version = "0.1.0"
+version = "0.1.1"
 description = "Warehouse Ddd"
 authors = ["Lex Trofimov <daslef93@gmail.com>"]
 license = "GPL-3.0"
@@ -19,14 +19,19 @@ classifiers = [
 Changelog = "https://github.com/daslef/warehouse-ddd/releases"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 click = ">=8.0.1"
+sqlalchemy = "^2.0.25"
+psycopg = {extras = ["binary"], version = "^3.1.17"}
+flask = "^3.0.0"
+python-dotenv = "^1.0.0"
+httpx = "^0.26.0"
+flask-login = "^0.6.3"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
 black = ">=21.10b0"
 coverage = {extras = ["toml"], version = ">=6.2"}
-darglint = ">=1.8.1"
 flake8 = ">=4.0.1"
 flake8-bandit = ">=2.1.2"
 flake8-bugbear = ">=21.9.2"
@@ -45,7 +50,6 @@ sphinx = ">=4.3.2"
 sphinx-autobuild = ">=2021.3.14"
 sphinx-click = ">=3.0.2"
 typeguard = ">=2.13.3"
-xdoctest = {extras = ["colors"], version = ">=0.15.10"}
 myst-parser = {version = ">=0.16.1"}
 
 [tool.poetry.scripts]
@@ -53,11 +57,10 @@ warehouse-ddd = "warehouse_ddd_petproject.__main__:main"
 
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
-tests = ["tests", "*/tests"]
 
 [tool.coverage.run]
 branch = true
-source = ["warehouse_ddd_petproject", "tests"]
+source = ["warehouse_ddd_petproject"]
 
 [tool.coverage.report]
 show_missing = true
@@ -75,6 +78,14 @@ pretty = true
 show_column_numbers = true
 show_error_codes = true
 show_error_context = true
+
+[[tool.mypy.overrides]]
+module = "flask_login"
+ignore_missing_imports = true
+
+[tool.black]
+line-length = 88
+preview = true
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

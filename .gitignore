@@ -9,3 +9,4 @@
 /src/*.egg-info/
 __pycache__/
 src/warehouse_ddd_petproject/.env
+poetry.lock

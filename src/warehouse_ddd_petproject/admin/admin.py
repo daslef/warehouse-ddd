@@ -1,50 +1,47 @@
-from flask import (
-    Blueprint,
-    request,
-    render_template,
-)
-
+from datetime import date
+from flask import Blueprint
+from flask import render_template
+from flask import request
 from flask_login import login_required
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-import model
-import repository
-from config import build_db_uri
+from warehouse_ddd_petproject.infrastructure import session
+from warehouse_ddd_petproject.domain import model, unit_of_work
 
 
 admin = Blueprint("admin", __name__, template_folder="templates")
 
-engine = create_engine(build_db_uri(".env"))
-get_session = sessionmaker(bind=engine)
-
 
 @admin.route("/batches", methods=["GET", "POST"])
 @login_required
-def admin_batches_view():
-    session = get_session()
-    repo = repository.SqlAlchemyRepository(session)
+def admin_batches_view() -> str:
+    uow = unit_of_work.SqlAlchemyUnitOfWork(session.SessionManager())
 
     if request.method == "POST":
         reference = request.form.get("reference")
         sku = request.form.get("sku")
-        qty = request.form.get("qty")
+        qty = int(request.form.get("qty"))
         eta = request.form.get("eta")
 
-        repo.add(model.Batch(reference, sku, qty, eta))
-        session.commit()
+        assert isinstance(reference, str)
+        assert isinstance(sku, str)
 
-    batches = repo.list()
+        if eta:
+            eta = date(eta)
+
+        with uow:
+            uow.batches.add(model.Batch(reference, sku, qty, eta))
+            uow.commit()
+
+    batches = uow.batches.list()
     return render_template("admin/batches.html", batches=batches)
 
 
 @admin.route("/")
 @login_required
-def admin_view():
-    session = get_session()
-    repo = repository.SqlAlchemyRepository(session)
-    batches = repo.list()
+def admin_view() -> str:
+    uow = unit_of_work.SqlAlchemyUnitOfWork(session.SessionManager())
+    batches = uow.batches.list()
     allocations = [b.allocations for b in batches]
 
     return render_template(

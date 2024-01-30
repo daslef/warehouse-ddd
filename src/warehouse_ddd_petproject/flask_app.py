@@ -1,43 +1,24 @@
 from flask import Flask
-from flask_login import LoginManager
 from werkzeug.security import gen_salt
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
-import model
-from config import build_db_uri
-from db_tables import start_mappers, metadata
-
-from auth.auth import auth
-from admin.admin import admin
-from api.api import api
-
-engine = create_engine(build_db_uri(".env"))
-get_session = sessionmaker(bind=engine)
-
-try:
-    metadata.create_all(bind=engine)
-    start_mappers()
-except Exception:
-    pass
-
-login_manager = LoginManager()
-login_manager.login_view = "auth.login"
-
-app = Flask(__name__)
-app.secret_key = gen_salt(20)
-
-login_manager.init_app(app)
+from warehouse_ddd_petproject.infrastructure import db_tables
+from warehouse_ddd_petproject.admin.admin import admin
+from warehouse_ddd_petproject.api.api import api
+from warehouse_ddd_petproject.auth.auth import auth
+from warehouse_ddd_petproject.auth.manager import create_manager
 
 
-@login_manager.user_loader
-def load_user(user_id: str):
-    session = get_session()
-    return session.get(model.User, int(user_id))
+def create_app(test_config: bool = False) -> Flask:
+    db_tables.create_tables()
 
+    app = Flask(__name__)
+    app.secret_key = gen_salt(20)
 
-app.register_blueprint(auth, url_prefix="/auth")
-app.register_blueprint(admin, url_prefix="/admin")
-app.register_blueprint(api, url_prefix="/api")
+    login_manager = create_manager()
+    login_manager.init_app(app)
 
-app.run(debug=True)
+    app.register_blueprint(auth, url_prefix="/auth")
+    app.register_blueprint(admin, url_prefix="/admin")
+    app.register_blueprint(api, url_prefix="/api")
+
+    return app

@@ -1,7 +1,21 @@
-from sqlalchemy import Column, Table, Integer, String, Date, ForeignKey
+from sqlalchemy import (
+    Column,
+    Date,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    create_engine,
+)
 from sqlalchemy.orm import registry, relationship
 
-import model
+import warehouse_ddd_petproject.auth.model  # FIXME
+
+from warehouse_ddd_petproject.infrastructure import (
+    config,
+)
+from warehouse_ddd_petproject.domain import model
+
 
 mapper_registry = registry()
 metadata = mapper_registry.metadata
@@ -42,8 +56,10 @@ allocations = Table(
 )
 
 
-def start_mappers():
-    lines_mapper = mapper_registry.map_imperatively(model.OrderLine, order_lines)
+def start_mappers() -> None:
+    lines_mapper = mapper_registry.map_imperatively(
+        model.OrderLine, order_lines
+    )
     mapper_registry.map_imperatively(
         model.Batch,
         batches,
@@ -55,7 +71,21 @@ def start_mappers():
             )
         },
     )
-    mapper_registry.map_imperatively(model.User, users)
+    mapper_registry.map_imperatively(
+        warehouse_ddd_petproject.auth.model.User, users
+    )
 
 
-start_mappers()
+def create_tables():
+    engine = create_engine(config.build_db_uri(".env"))
+
+    try:
+        metadata.create_all(bind=engine)
+        start_mappers()
+    except Exception:
+        pass
+
+
+if __name__ == "__main__":
+    create_tables()
+    start_mappers()

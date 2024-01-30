@@ -1,39 +1,31 @@
-from flask import (
-    Blueprint,
-    request,
-    render_template,
-    redirect,
-    flash,
-)
+from flask import Blueprint
+from flask import flash
+from flask import redirect
+from flask import render_template
+from flask import request
+from flask import Response
 from flask_login import login_user, logout_user
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-import model
-from config import build_db_uri
-
+from warehouse_ddd_petproject.infrastructure import session
+from .model import User
 
 auth = Blueprint(
     "auth", __name__, static_folder="static", template_folder="templates"
 )
 
-engine = create_engine(build_db_uri(".env"))
-get_session = sessionmaker(bind=engine)
-
 
 @auth.route("/login", methods=["GET", "POST"])
-def login():
+def login() -> str | Response:
     if request.method == "GET":
         return render_template("auth/login.html")
 
     login_field = request.form.get("email")
     password_field = request.form.get("password")
 
-    session = get_session()
     user = (
-        session.query(model.User)
-        .where(model.User.username == login_field)
+        session.SessionManager()
+        .query(User)
+        .where(User.username == login_field)
         .first()
     )
 
@@ -46,31 +38,30 @@ def login():
 
 
 @auth.route("/logout")
-def logout():
+def logout() -> Response:
     logout_user()
     return redirect("/auth/login")
 
 
 @auth.route("/signup", methods=["GET", "POST"])
-def signup():
+def signup() -> str | Response:
     if request.method == "GET":
         return render_template("auth/signup.html")
 
-    email_field = request.form.get("email")
-    password_field = request.form.get("password")
+    email_field = request.form.get("email", "")
+    password_field = request.form.get("password", "")
 
-    session = get_session()
+    signup_session = session.SessionManager()
+
     user = (
-        session.query(model.User)
-        .where(model.User.username == email_field)
-        .first()
+        signup_session.query(User).where(User.username == email_field).first()
     )
 
     if user:
         flash("Account already exists. Maybe you want to sign in?", "error")
         return render_template("auth/signup.html")
 
-    session.add(model.User(email_field, password_field))
-    session.commit()
+    signup_session.add(User(email_field, password_field))
+    signup_session.commit()
 
     return redirect("/auth/login")
